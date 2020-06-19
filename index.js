@@ -10,6 +10,7 @@ const presenceCheckIntervalSeconds = 10;
 const deviceUrl = baseUrl + "devicecode";
 const tokenUrl = baseUrl + "token";
 const useTwilio = true;
+const useParticle = true;
 
 // RGB constants for LED
 const OFF = 0x101010;
@@ -45,14 +46,14 @@ function doTheThing() {
                         // send status only if changed since last poll
                         if (result.availability !== presence.availability || result.activity !== presence.activity) {
                             console.log(`${new Date().toLocaleTimeString()} Presence changed. Availability: ${result.availability}, Activity: ${result.activity}`);
-                            switch(result.availability) {
+                            switch (result.availability) {
                                 case "Available":
                                 case "AvailableIdle":
                                     setColor(GREEN);
                                     break;
                                 case "Busy":
                                 case "BusyIdle":
-                                    switch(result.activity) {
+                                    switch (result.activity) {
                                         case "InACall":
                                         case "InAConferenceCall":
                                             setColor(RED);
@@ -65,17 +66,24 @@ function doTheThing() {
                                     setColor(RED);
                                     break;
                                 case "Away":
+                                    switch (result.activity) {
+                                        case "OutOfOffice":
+                                            setColor(PURPLE);
+                                            break;
+                                        default: 
+                                            setColor(YELLOW);
+                                    }
                                 case "BeRightBack":
                                     setColor(YELLOW);
                                     break;
                                 case "Offline":
                                     setColor(OFF);
-                                    break;   
+                                    break;
                                 default:
                                     setColor(PURPLE);
-                                    break;                                 
+                                    break;
                             }
-                            presence = result;    
+                            presence = result;
                         }
                         state = "none";
                     })
@@ -107,7 +115,9 @@ function doTheThing() {
 }
 
 function setColor(color) {
-    particle.callFunction("SetColor",color);
+    if (useParticle) {
+        particle.callFunction("SetColor", color);
+    }
 }
 
 function getToken() {
