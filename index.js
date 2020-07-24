@@ -3,6 +3,7 @@ const graph = require("./graph");
 const twilio = require("./twilio");
 const particle = require("./particle")
 const fs = require("fs");
+const { Console } = require("console");
 
 const baseUrl = "https://login.microsoftonline.com/" + secrets.SECRET_OFFICE365_TENANTID + "/oauth2/v2.0/";
 const clientId = secrets.SECRET_OFFICE365_CLIENTID;
@@ -73,7 +74,9 @@ function doTheThing() {
                                         default: 
                                             setColor(YELLOW);
                                     }
+                                    break;
                                 case "BeRightBack":
+                                    console.log("Yellow");
                                     setColor(YELLOW);
                                     break;
                                 case "Offline":
