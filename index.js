@@ -184,7 +184,7 @@ function saveCreds() {
         "tokenExpires": tokenExpires,
         "refreshToken": refreshToken
     };
-    fs.writeFileSync("./access.json", JSON.stringify(access));
+    fs.writeFileSync("./access.json", JSON.stringify(access), {mode: 0o600});
 }
 
 function poll(fn, timeout, interval) {
