@@ -8,10 +8,12 @@ const { Console } = require("console");
 const baseUrl = "https://login.microsoftonline.com/" + secrets.SECRET_OFFICE365_TENANTID + "/oauth2/v2.0/";
 const clientId = secrets.SECRET_OFFICE365_CLIENTID;
 const presenceCheckIntervalSeconds = 10;
+const backupCheckIntervalSeconds = 300;
 const deviceUrl = baseUrl + "devicecode";
 const tokenUrl = baseUrl + "token";
 const useTwilio = true;
 const useParticle = true;
+const saveAccessToken = false;
 
 // RGB constants for LED
 const OFF = 0x101010;
@@ -26,6 +28,7 @@ let accessToken = null;
 let tokenExpires = null;
 let refreshToken = null;
 
+// Init
 let state = "none";
 let presence = {
     availability: "none",
@@ -71,7 +74,7 @@ function doTheThing() {
                                         case "OutOfOffice":
                                             setColor(PURPLE);
                                             break;
-                                        default: 
+                                        default:
                                             setColor(YELLOW);
                                     }
                                     break;
@@ -83,7 +86,7 @@ function doTheThing() {
                                     setColor(OFF);
                                     break;
                                 default:
-                                    setColor(PURPLE);
+                                    setColor(OFF);
                                     break;
                             }
                             presence = result;
@@ -179,12 +182,14 @@ function readCreds() {
 }
 
 function saveCreds() {
-    const access = {
-        "accessToken": accessToken,
-        "tokenExpires": tokenExpires,
-        "refreshToken": refreshToken
-    };
-    fs.writeFileSync("./access.json", JSON.stringify(access), {mode: 0o600});
+    if (saveAccessToken) {
+        const access = {
+            "accessToken": accessToken,
+            "tokenExpires": tokenExpires,
+            "refreshToken": refreshToken
+        };
+        fs.writeFileSync("./access.json", JSON.stringify(access), { mode: 0o600 });
+    }
 }
 
 function poll(fn, timeout, interval) {
