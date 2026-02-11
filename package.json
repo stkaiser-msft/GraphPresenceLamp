@@ -2,7 +2,7 @@
     "name": "TeamsPresenceLamp",
     "description": "Log in to Microsoft Graph and retrieve Teams presence",
     "dependencies": {
-        "axios": "^1.12.0",
+        "axios": "^1.13.5",
         "particle-api-js": "^10.4.3",
         "store": "^2.0.12"
     }
